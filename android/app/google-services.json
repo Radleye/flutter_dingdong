@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "77908163475",
+    "firebase_url": "https://dongdong-7c019.firebaseio.com",
+    "project_id": "dongdong-7c019",
+    "storage_bucket": "dongdong-7c019.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:77908163475:android:303938e5d3a116ce6a8666",
+        "android_client_info": {
+          "package_name": "com.lsf.hyit.flutter_dingdong"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "77908163475-fj66f02l0ikqgmk0ja3fjvv5893q7d3t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBpw_jo1oVihn6mxXGzTs3Bmp4RHUfv1VQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "77908163475-fj66f02l0ikqgmk0ja3fjvv5893q7d3t.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
