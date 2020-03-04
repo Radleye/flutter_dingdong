@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_dingdong/model/user.dart';
 import 'package:flutter_dingdong/model/product.dart';
 import 'package:flutter_dingdong/model/productcontroller.dart';
 import 'package:flutter_dingdong/widgets/hotdetails.dart';

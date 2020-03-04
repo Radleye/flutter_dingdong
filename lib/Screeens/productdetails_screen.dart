@@ -1,8 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dingdong/Screeens/shop_screen.dart';
 import 'package:flutter_dingdong/model/product.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
+import 'package:flutter_dingdong/model/cartprovider.dart';
 
 int quantity = 1;
 
@@ -18,6 +21,7 @@ class ProductDetails extends StatefulWidget {
 class _ProductDetailsState extends State<ProductDetails> {
   @override
   Widget build(BuildContext context) {
+    final cartInfoProvider = Provider.of<CartProvider>(context);
     return Scaffold(
         appBar: AppBar(
           title: Text('商品详情'),
@@ -154,7 +158,16 @@ class _ProductDetailsState extends State<ProductDetails> {
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: <Widget>[
                                 OutlineButton(
-                                  onPressed: () {},
+                                  onPressed: () async {
+                                    await cartInfoProvider.save(
+                                      widget.product.id,
+                                      widget.product.name,
+                                      widget.product.price,
+                                      widget.product.img,
+                                      quantity,
+                                      widget.product.isLike,
+                                    );
+                                  },
                                   child: Text(
                                     '立即购买',
                                     style: TextStyle(color: Colors.blue),
@@ -175,7 +188,9 @@ class _ProductDetailsState extends State<ProductDetails> {
                             width: 200,
                             child: FlatButton(
                               color: Colors.lightBlue,
-                              onPressed: () {},
+                              onPressed: () async {
+                                await cartInfoProvider.remove();
+                              },
                               child: Text(
                                 '加入购物车',
                                 style: TextStyle(color: Colors.white),

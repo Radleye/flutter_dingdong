@@ -1,12 +1,25 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_dingdong/Screeens/index.dart';
 import 'package:flutter_dingdong/Screeens/loginup_screen.dart';
-import 'package:flutter_dingdong/Screeens/shop_screen.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   static const String id = 'login_screen';
+
+  @override
+  _LoginScreenState createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  String email, password;
+
   @override
   Widget build(BuildContext context) {
+    final _auth = FirebaseAuth.instance;
+    bool showSpinner = false;
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -27,6 +40,7 @@ class LoginScreen extends StatelessWidget {
         ),
         actions: <Widget>[
           FlatButton(
+            onPressed: () {},
             child: Text(
               '登录',
               style: TextStyle(color: Colors.blue),
@@ -34,105 +48,135 @@ class LoginScreen extends StatelessWidget {
           )
         ],
       ),
-      body: ListView(
-        shrinkWrap: true,
-        children: <Widget>[
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 18),
-            child: Stack(
-              children: <Widget>[
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      '欢迎回来!',
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 24,
-                          fontWeight: FontWeight.w800),
-                    ),
-                    Text(
-                      '身份验证',
-                      style: TextStyle(color: Colors.grey),
-                    ),
-                    Container(
-                      margin: EdgeInsets.only(top: 13),
-                      child: TextField(
-                        decoration: InputDecoration(
-                            hintText: '邮箱',
-                            hintStyle: TextStyle(
-                              color: Color(0xff444444),
-                            ),
-                            border: OutlineInputBorder(
-                              gapPadding: 0,
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(6),
+      body: ModalProgressHUD(
+        inAsyncCall: showSpinner,
+        child: ListView(
+          shrinkWrap: true,
+          children: <Widget>[
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 18),
+              child: Stack(
+                children: <Widget>[
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        '欢迎回来!',
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 24,
+                            fontWeight: FontWeight.w800),
+                      ),
+                      Text(
+                        '身份验证',
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(top: 13),
+                        child: TextField(
+                          onChanged: (value) {
+                            setState(() {
+                              email = value;
+                            });
+                          },
+                          decoration: InputDecoration(
+                              hintText: '邮箱',
+                              hintStyle: TextStyle(
+                                color: Color(0xff444444),
                               ),
-                            ),
-                            contentPadding: EdgeInsets.symmetric(
-                                horizontal: 20, vertical: 10)),
-                      ),
-                    ),
-                    Container(
-                      margin: EdgeInsets.only(top: 13),
-                      child: TextField(
-                        keyboardType: TextInputType.visiblePassword,
-                        decoration: InputDecoration(
-                            hintText: '密码',
-                            hintStyle: TextStyle(
-                              color: Color(0xff444444),
-                            ),
-                            border: OutlineInputBorder(
-                              gapPadding: 0,
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(6),
+                              border: OutlineInputBorder(
+                                gapPadding: 0,
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(6),
+                                ),
                               ),
-                            ),
-                            contentPadding: EdgeInsets.symmetric(
-                                horizontal: 20, vertical: 10)),
+                              contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 10)),
+                        ),
                       ),
-                    ),
-                    Container(
-                      margin: EdgeInsets.only(left: 15, top: 10),
-                      child: Text(
-                        '忘记密码？',
-                        style: TextStyle(color: Colors.blue),
+                      Container(
+                        margin: EdgeInsets.only(top: 13),
+                        child: TextField(
+                          onChanged: (value) {
+                            setState(() {
+                              password = value;
+                            });
+                          },
+                          keyboardType: TextInputType.visiblePassword,
+                          decoration: InputDecoration(
+                              hintText: '密码',
+                              hintStyle: TextStyle(
+                                color: Color(0xff444444),
+                              ),
+                              border: OutlineInputBorder(
+                                gapPadding: 0,
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(6),
+                                ),
+                              ),
+                              contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 10)),
+                        ),
                       ),
-                    )
-                  ],
-                ),
-                Positioned(
-                  bottom: 15,
-                  right: -15,
-                  child: FlatButton(
-                    onPressed: () {
-                      Navigator.pushNamed(context, ShopScreen.id);
-                    },
-                    child: Icon(
-                      Icons.arrow_forward,
-                      color: Colors.white,
-                    ),
-                    shape: CircleBorder(),
-                    padding: EdgeInsets.all(15),
-                    color: Colors.blue,
+                      Container(
+                        margin: EdgeInsets.only(left: 15, top: 10),
+                        child: Text(
+                          '忘记密码？',
+                          style: TextStyle(color: Colors.blue),
+                        ),
+                      )
+                    ],
                   ),
-                )
-              ],
-            ),
-            height: 275,
-            decoration: BoxDecoration(
-              boxShadow: [
-                BoxShadow(color: Colors.grey, blurRadius: 50, spreadRadius: 5),
-              ],
-              color: Colors.white,
-              borderRadius: BorderRadius.only(
-                bottomRight: Radius.circular(30),
-                bottomLeft: Radius.circular(30),
+                  Positioned(
+                    bottom: 15,
+                    right: -15,
+                    child: FlatButton(
+                      onPressed: () async {
+                        setState(() {
+                          showSpinner = true;
+                        });
+
+                        try {
+                          final user = await _auth.signInWithEmailAndPassword(
+                              email: email, password: password);
+                          if (user != null) {
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (_) => Index()));
+                          }
+                          setState(() {
+                            showSpinner = true;
+                          });
+                        } catch (e) {
+                          print(e);
+                        }
+                      },
+                      child: Icon(
+                        Icons.arrow_forward,
+                        color: Colors.white,
+                      ),
+                      shape: CircleBorder(),
+                      padding: EdgeInsets.all(15),
+                      color: Colors.blue,
+                    ),
+                  )
+                ],
               ),
-            ),
-          )
-        ],
+              height: 275,
+              decoration: BoxDecoration(
+                boxShadow: [
+                  BoxShadow(
+                      color: Colors.grey, blurRadius: 50, spreadRadius: 5),
+                ],
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  bottomRight: Radius.circular(30),
+                  bottomLeft: Radius.circular(30),
+                ),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

@@ -1,15 +1,14 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter_dingdong/model/product.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'product.dart';
+import 'package:flutter/cupertino.dart';
 
-class ProductController extends ChangeNotifier {
-  List<Product> products;
-  Product product;
+DocumentSnapshot ds;
+
+class UserProvider extends ChangeNotifier {
   final Firestore _db = Firestore.instance;
   CollectionReference ref;
   final String path;
-  ProductController(this.path) {
+
+  UserProvider(this.path) {
     ref = _db.collection(path);
   }
 
@@ -33,11 +32,18 @@ class ProductController extends ChangeNotifier {
     return ref.document(id).updateData(data);
   }
 
-  Future<List<Product>> fetchProducts() async {
-    var result = await ref.getDocuments();
-    products = result.documents.map((f) {
-      return Product.fromMap(f.data, f.documentID);
-    }).toList();
-    return products;
+  DocumentSnapshot searchUser(String email) {
+    Firestore.instance
+        .collection('user')
+        .where("email", isEqualTo: email)
+        .snapshots()
+        .listen(
+          (data) => data.documents.forEach(
+            (doc) {
+              ds = doc;
+            },
+          ),
+        );
+    return ds;
   }
 }

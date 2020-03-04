@@ -47,14 +47,14 @@ class _IndexState extends State<Index> {
   Widget build(BuildContext context) {
     return Scaffold(
       bottomNavigationBar: BottomNavigationBar(
-        items: bottomNavItems,
-        currentIndex: _selectedIndex,
-        onTap:(index){
-          setState(() {
-            _selectedIndex=index;
-          });
-        }
-      ),
+          items: bottomNavItems,
+          type: BottomNavigationBarType.fixed,
+          currentIndex: _selectedIndex,
+          onTap: (index) {
+            setState(() {
+              _selectedIndex = index;
+            });
+          }),
       body: pages[_selectedIndex],
     );
   }
