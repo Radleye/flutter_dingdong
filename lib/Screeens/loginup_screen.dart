@@ -14,10 +14,10 @@ class LoginUpScreen extends StatefulWidget {
 
 class _LoginUpScreenState extends State<LoginUpScreen> {
   String name, phone, email, password;
+  bool showSpinner = false;
   @override
   Widget build(BuildContext context) {
     final _auth = FirebaseAuth.instance;
-    bool showSpinner = false;
     return Scaffold(
       appBar: AppBar(
         elevation: 0,

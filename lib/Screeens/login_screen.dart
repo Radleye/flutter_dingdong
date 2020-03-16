@@ -15,11 +15,11 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   String email, password;
+  bool showSpinner = false;
 
   @override
   Widget build(BuildContext context) {
     final _auth = FirebaseAuth.instance;
-    bool showSpinner = false;
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -135,6 +135,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       onPressed: () async {
                         setState(() {
                           showSpinner = true;
+                          print(showSpinner);
                         });
 
                         try {
@@ -145,7 +146,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 MaterialPageRoute(builder: (_) => Index()));
                           }
                           setState(() {
-                            showSpinner = true;
+                            showSpinner = false;
                           });
                         } catch (e) {
                           print(e);
