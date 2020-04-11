@@ -22,23 +22,24 @@ class ProductCard extends StatelessWidget {
             children: <Widget>[
               Container(
                 child: RaisedButton(
-                    elevation: 5,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10)),
-                    color: Colors.white,
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ProductDetails(product),
-                        ),
-                      );
-                    },
-                    child: Image.network(
-                      product.img,
-                      width: 78,
-                      height: 78,
-                    )),
+                  elevation: 5,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)),
+                  color: Colors.white,
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ProductDetails(product),
+                      ),
+                    );
+                  },
+                  child: Image.network(
+                    product.img,
+                    width: 78,
+                    height: 78,
+                  ),
+                ),
                 width: 130,
                 height: 130,
               ),

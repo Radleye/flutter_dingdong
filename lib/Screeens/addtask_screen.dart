@@ -47,21 +47,17 @@ class _AddScreenState extends State<AddScreen> {
     TextEditingController _contentController = TextEditingController();
     final userprovider = Provider.of<UserProvider>(context);
     final demandProvider = Provider.of<DemandProvider>(context);
-    String getUser() {
-      DocumentSnapshot ds = userprovider.searchUser(loggedInUser.email);
-      print(ds['name'].toString());
-      return ds['name'].toString();
+    /* String getUser() {
+      return ;
     }
 
     String getNumber() {
-      DocumentSnapshot ds = userprovider.searchUser(loggedInUser.email);
-
-      return ds['phone'].toString();
+      return ;
     }
 
     String name = getUser();
     String phone = getNumber();
-
+*/
     return Scaffold(
         appBar: AppBar(
           leading: Text(''),
@@ -152,10 +148,12 @@ class _AddScreenState extends State<AddScreen> {
                                     content = _contentController.text;
                                     await demandProvider.addDocument(
                                       Demand(
-                                        name: name,
-                                        content: content,
-                                        phone: phone,
-                                      ).toJson(),
+                                              name: userprovider.searchUser(
+                                                  loggedInUser.email)['name'],
+                                              content: content,
+                                              phone: userprovider.searchUser(
+                                                  loggedInUser.email)['phone'])
+                                          .toJson(),
                                     );
                                     Navigator.pop(context);
                                   });

@@ -41,6 +41,7 @@ class CartProvider extends ChangeNotifier {
         'img': img,
         'count': count,
         'isLike': isLike,
+        'isCheck': true,
       };
       tempList.add(newProduct);
       cartList.add(Cart.fromJson(newProduct));
@@ -73,5 +74,24 @@ class CartProvider extends ChangeNotifier {
       });
     }
     notifyListeners();
+  }
+
+  //删除单个购物车商品
+  deleteGoods(String goodsId) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    cartString = prefs.getString('cartInfo');
+    List<Map> tempList = (json.decode(cartString.toString()) as List).cast();
+    int tempindex = 0;
+    int deleteindex = 0;
+    tempList.forEach((item) {
+      if (item['id'] == goodsId) {
+        deleteindex = tempindex;
+      }
+      tempindex++;
+    });
+    tempList.removeAt(deleteindex);
+    cartString = json.encode(tempList).toString();
+    prefs.setString('cartInfo', cartString);
+    await getCartInfo();
   }
 }

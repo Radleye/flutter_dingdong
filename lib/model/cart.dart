@@ -5,8 +5,16 @@ class Cart {
   String img;
   int count;
   bool isLike;
+  bool isCheck;
 
-  Cart({this.id, this.name, this.price, this.img, this.count, this.isLike});
+  Cart(
+      {this.id,
+      this.name,
+      this.price,
+      this.img,
+      this.count,
+      this.isLike,
+      this.isCheck = false});
 
   Cart.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -15,6 +23,7 @@ class Cart {
     img = json['img'];
     count = json['count'];
     isLike = json['isLike'];
+    isCheck = json['isCheck'];
   }
 
   Map<String, dynamic> toJson() {
@@ -25,6 +34,7 @@ class Cart {
     data['img'] = this.img;
     data['count'] = this.count;
     data['isLike'] = this.isLike;
+    data['isCheck'] = this.isCheck;
     return data;
   }
 }

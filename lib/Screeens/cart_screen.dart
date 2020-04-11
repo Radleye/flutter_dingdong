@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dingdong/Screeens/addtask_screen.dart';
+import 'package:flutter_dingdong/model/cart_bottom.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_dingdong/model/cartprovider.dart';
+import 'cart_item.dart';
 
 class Cart extends StatelessWidget {
   @override
@@ -16,13 +19,29 @@ class Cart extends StatelessWidget {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             List cartList = Provider.of<CartProvider>(context).cartList;
-            return ListView.builder(
+            return Stack(
+              children: <Widget>[
+                ListView.builder(
+                    itemCount: cartList.length,
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        title: CartItem(cartList[index]),
+                      );
+                    }),
+                Positioned(
+                  bottom: 0,
+                  left: 0,
+                  child: CartBottom(),
+                )
+              ],
+            );
+            /* return ListView.builder(
                 itemCount: cartList.length,
                 itemBuilder: (context, index) {
                   return ListTile(
-                    title: Text(cartList[index].name),
+                    title: CartItem(cartList[index]),
                   );
-                });
+                });*/
           } else {
             return Text('loding');
           }
