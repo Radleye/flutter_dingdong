@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_dingdong/model/cart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -6,6 +7,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 class CartProvider extends ChangeNotifier {
   String cartString = "[]";
   List<Cart> cartList = [];
+  int allPrice = 0;
+  int allGoodsCount = 0;
+  bool isAllCheck = true;
   /*
   * 1.创建sharedPreference对象
   * 2.获得键值所对应的字符串，有的话就获得json字符串的对象，没有就是null
@@ -26,7 +30,7 @@ class CartProvider extends ChangeNotifier {
     int val = 0;
     tempList.forEach((item) {
       if (item['id'] == productId) {
-        tempList[val]['count'] = item['count'] + 1;
+        tempList[val]['count'] += item['count'];
         cartList[val].count++;
         isHave = true;
       }
@@ -68,8 +72,17 @@ class CartProvider extends ChangeNotifier {
     if (cartString == null) {
       cartList = [];
     } else {
+      allGoodsCount = 0;
+      allPrice = 0;
+      isAllCheck = true;
       List<Map> tempList = (jsonDecode(cartString.toString()) as List).cast();
       tempList.forEach((item) {
+        if (item['isCheck']) {
+          allPrice += (item['count'] * item['price']);
+          allGoodsCount += item['count'];
+        } else {
+          isAllCheck = false;
+        }
         cartList.add(Cart.fromJson(item));
       });
     }
@@ -90,6 +103,65 @@ class CartProvider extends ChangeNotifier {
       tempindex++;
     });
     tempList.removeAt(deleteindex);
+    cartString = json.encode(tempList).toString();
+    prefs.setString('cartInfo', cartString);
+    await getCartInfo();
+  }
+
+  changeCheckState(Cart cartItem) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    cartString = prefs.getString('cartInfo');
+    List<Map> tempList = (json.decode(cartString.toString()) as List).cast();
+    int tempIndex = 0;
+    int changeIndex = 0;
+    tempList.forEach((item) {
+      if (item['id'] == cartItem.id) {
+        changeIndex = tempIndex;
+      }
+      tempIndex++;
+    });
+    tempList[changeIndex] = cartItem.toJson();
+    cartString = json.encode(tempList).toString();
+    prefs.setString('cartInfo', cartString);
+    await getCartInfo();
+  }
+
+  changeAllCheckBtnState(bool isCheck) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    cartString = prefs.getString('cartInfo');
+    List<Map> tempList = (json.decode(cartString.toString()) as List).cast();
+    List<Map> newList = [];
+    for (var item in tempList) {
+      var newItem = item;
+      newItem['isCheck'] = isCheck;
+      newList.add(newItem);
+    }
+
+    cartString = json.encode(newList).toString();
+    prefs.setString('cartInfo', cartString);
+    await getCartInfo();
+  }
+
+  //商品数量加减
+  addOrReduce(var cartItem, String todo) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    cartString = prefs.getString('cartInfo');
+    List<Map> tempList = (json.decode(cartString.toString()) as List).cast();
+    int temoIndex = 0;
+    int changeIndex = 0;
+    tempList.forEach((item) {
+      if (item['id'] == cartItem.id) {
+        changeIndex = temoIndex;
+      }
+      temoIndex++;
+    });
+    if (todo == 'add') {
+      cartItem.count++;
+    } else if (todo == 'minus') {
+      cartItem.count--;
+    }
+
+    tempList[changeIndex] = cartItem.toJson();
     cartString = json.encode(tempList).toString();
     prefs.setString('cartInfo', cartString);
     await getCartInfo();

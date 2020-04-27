@@ -10,7 +10,6 @@ import 'package:flutter_dingdong/model/productcontroller.dart';
 import 'package:flutter_dingdong/model/cartprovider.dart';
 import 'package:flutter_dingdong/model/userprovider.dart';
 import 'package:flutter_dingdong/model/dmeandprovider.dart';
-
 import 'Screeens/welcome_screen.dart';
 import 'package:provider/provider.dart';
 

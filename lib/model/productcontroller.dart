@@ -25,8 +25,8 @@ class ProductController extends ChangeNotifier {
     return ref.document(id).delete();
   }
 
-  Future<DocumentReference> addDocument(Map data) {
-    return ref.add(data);
+  Future<DocumentReference> addDocument(Map data) async {
+    return await ref.add(data);
   }
 
   Future<void> updateDocument(Map data, String id) {

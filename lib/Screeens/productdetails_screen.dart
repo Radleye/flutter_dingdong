@@ -162,7 +162,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                                     await cartInfoProvider.save(
                                       widget.product.id,
                                       widget.product.name,
-                                      widget.product.price,
+                                      int.parse(widget.product.price),
                                       widget.product.img,
                                       quantity,
                                       widget.product.isLike,

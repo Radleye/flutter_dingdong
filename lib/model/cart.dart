@@ -1,7 +1,7 @@
 class Cart {
   String id;
   String name;
-  String price;
+  int price;
   String img;
   int count;
   bool isLike;

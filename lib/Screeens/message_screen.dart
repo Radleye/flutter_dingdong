@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_dingdong/constants/myIcon.dart';
+import 'package:flutter_dingdong/model/userprovider.dart';
+import 'package:provider/provider.dart';
 
 class Message extends StatefulWidget {
   static const String id = 'Message_screen';
@@ -14,7 +16,6 @@ FirebaseUser loggedInUser;
 
 class _MessageState extends State<Message> {
   final _auth = FirebaseAuth.instance;
-
   final messageTextController = TextEditingController();
   String messageText;
   @override
@@ -97,6 +98,7 @@ class _MessageState extends State<Message> {
 class MessagesStream extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final userprovider = Provider.of<UserProvider>(context);
     return StreamBuilder<QuerySnapshot>(
       stream: _firestore
           .collection('message')
@@ -122,6 +124,7 @@ class MessagesStream extends StatelessWidget {
             sender: messageSender,
             text: messageText,
             isMe: currentUser == messageSender,
+            //user: userprovider.searchUser(loggedInUser.email)['name'],
           );
 
           messageBubbles.add(messageBubble);
@@ -139,7 +142,11 @@ class MessagesStream extends StatelessWidget {
 }
 
 class MessageBubble extends StatelessWidget {
-  MessageBubble({this.sender, this.text, this.isMe});
+  MessageBubble({
+    this.sender,
+    this.text,
+    this.isMe,
+  });
 
   final String sender;
   final String text;
@@ -153,12 +160,18 @@ class MessageBubble extends StatelessWidget {
         crossAxisAlignment:
             isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
         children: <Widget>[
-          Text(
-            sender,
-            style: TextStyle(
-              fontSize: 12.0,
-              color: Colors.black54,
-            ),
+          Row(
+            mainAxisAlignment:
+                isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                sender,
+                style: TextStyle(
+                  fontSize: 12.0,
+                  color: Colors.black54,
+                ),
+              ),
+            ],
           ),
           Material(
             borderRadius: isMe

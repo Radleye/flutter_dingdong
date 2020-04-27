@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dingdong/Screeens/login_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_dingdong/model/myuser.dart';
 import 'package:flutter_dingdong/model/user.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
@@ -187,6 +189,14 @@ class _LoginUpScreenState extends State<LoginUpScreen> {
                                       email: email,
                                       password: password)
                                   .toJson());
+                          Firestore.instance.collection('myuser').add(MyUser(
+                                  name: name,
+                                  email: email,
+                                  phone: phone,
+                                  password: password,
+                                  post: null,
+                                  accept: null)
+                              .toJson());
                           final newUser =
                               await _auth.createUserWithEmailAndPassword(
                                   email: email, password: password);

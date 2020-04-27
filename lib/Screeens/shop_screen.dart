@@ -65,7 +65,6 @@ class MyStream extends StatelessWidget {
     return StreamBuilder<QuerySnapshot>(
       stream: _firebase.collection('User').snapshots(),
       builder: (context, snapshot) {
-        print(snapshot.connectionState);
         if (snapshot.hasError) {
           print(snapshot.error);
           return Text('Erro ${snapshot.error}');

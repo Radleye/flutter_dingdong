@@ -2,8 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 
 DocumentSnapshot ds;
+DocumentSnapshot ds5;
 
 class UserProvider extends ChangeNotifier {
+  String name;
   final Firestore _db = Firestore.instance;
   CollectionReference ref;
   final String path;
@@ -45,5 +47,20 @@ class UserProvider extends ChangeNotifier {
           ),
         );
     return ds;
+  }
+
+  String getName(String email) {
+    Firestore.instance
+        .collection('user')
+        .where("email", isEqualTo: email)
+        .snapshots()
+        .listen(
+          (data) => data.documents.forEach(
+            (doc) {
+              ds = doc;
+            },
+          ),
+        );
+    return ds['name'];
   }
 }

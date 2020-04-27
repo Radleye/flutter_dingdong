@@ -1,15 +1,66 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_dingdong/model/dmeandprovider.dart';
 import 'package:flutter_dingdong/model/demand.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_dingdong/Screeens/addtask_screen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_dingdong/model/myuser.dart';
+import 'package:flutter_dingdong/model/user.dart';
 
-class SlideList extends StatelessWidget {
+FirebaseUser loggedInUser;
+User myUser;
+
+class SlideList extends StatefulWidget {
   final Demand demand;
   SlideList({this.demand});
+
+  @override
+  _SlideListState createState() => _SlideListState();
+}
+
+class _SlideListState extends State<SlideList> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getCurrentUser();
+  }
+
+  final _auth = FirebaseAuth.instance;
+  void getCurrentUser() async {
+    try {
+      final user = await _auth.currentUser();
+      if (user != null) {
+        loggedInUser = user;
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  DocumentSnapshot searchmyUser(String email) {
+    Firestore.instance
+        .collection('myuser')
+        .where("email", isEqualTo: email)
+        .snapshots()
+        .listen(
+          (data) => data.documents.forEach(
+            (doc) {
+              ds6 = doc;
+            },
+          ),
+        );
+    return ds6;
+  }
+
   @override
   Widget build(BuildContext context) {
     final demandProvider = Provider.of<DemandProvider>(context);
+
     return Slidable(
       actionPane: SlidableDrawerActionPane(),
       actionExtentRatio: 0.25,
@@ -30,13 +81,13 @@ class SlideList extends StatelessWidget {
                       children: <Widget>[
                         CircleAvatar(
                           backgroundColor: Colors.indigoAccent,
-                          child: Text(demand.name[0]),
+                          child: Text(widget.demand.name[0]),
                           foregroundColor: Colors.white,
                         ),
                         SizedBox(
                           width: 10,
                         ),
-                        Text(demand.name),
+                        Text(widget.demand.name),
                       ],
                     ),
                   ),
@@ -47,7 +98,7 @@ class SlideList extends StatelessWidget {
                     margin: EdgeInsets.only(left: 15),
                     width: double.infinity,
                     child: Text(
-                      demand.content,
+                      widget.demand.content,
                       textAlign: TextAlign.left,
                     ),
                   ),
@@ -68,7 +119,7 @@ class SlideList extends StatelessWidget {
                         width: 5,
                       ),
                       Text(
-                        "江苏省淮安市淮阴工学院南苑22栋",
+                        widget.demand.address,
                         style: TextStyle(color: Colors.grey, fontSize: 12),
                       )
                     ],
@@ -93,17 +144,29 @@ class SlideList extends StatelessWidget {
       ],
       secondaryActions: <Widget>[
         IconSlideAction(
-          caption: '更多',
+          caption: '接受',
           color: Colors.black45,
-          icon: Icons.more_horiz,
-          onTap: () {},
+          icon: Icons.change_history,
+          onTap: () async {
+            DocumentSnapshot ds2 = searchmyUser(loggedInUser.email);
+            print(ds2.documentID);
+            print(ds2['name']);
+            print(widget.demand.content.toString());
+            ds2.reference.collection('accepts').add(Accept(
+                    id: null,
+                    sender: widget.demand.name,
+                    content: widget.demand.content,
+                    senderphone: widget.demand.phone)
+                .toJson());
+            await demandProvider.removeDocument(widget.demand.id1);
+          },
         ),
         IconSlideAction(
           caption: '删除',
           color: Colors.red,
           icon: Icons.delete,
           onTap: () async {
-            await demandProvider.removeDocument(demand.id1);
+            await demandProvider.removeDocument(widget.demand.id1);
             print('delete succesful');
           },
         ),

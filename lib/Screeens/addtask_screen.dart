@@ -4,17 +4,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dingdong/constants/myIcon.dart';
 import 'package:flutter_dingdong/model/demand.dart';
 import 'package:flutter_dingdong/model/dmeandprovider.dart';
+import 'package:flutter_dingdong/model/myuser.dart';
 import 'package:flutter_dingdong/model/userprovider.dart';
 import 'package:provider/provider.dart';
-
 import 'package:flutter_dingdong/model/user.dart';
 import 'package:flutter_dingdong/widgets/slidelist.dart';
+import 'package:amap_location/amap_location.dart';
 
 final _firestore = Firestore.instance;
 FirebaseUser loggedInUser;
+DocumentSnapshot ds6;
 String content;
 User myUser;
 Demand demand;
+String result;
+final CollectionReference dbf = Firestore.instance.collection('myuser');
 
 class AddScreen extends StatefulWidget {
   @override
@@ -24,10 +28,29 @@ class AddScreen extends StatefulWidget {
 class _AddScreenState extends State<AddScreen> {
   final _auth = FirebaseAuth.instance;
   @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    AMapLocationClient.shutdown();
+  }
+
+  @override
   void initState() {
     // TODO: implement initState
     super.initState();
     getCurrentUser();
+    getLocation();
+  }
+
+  getLocation() async {
+    // 申请权限
+    await AMapLocationClient.startup(AMapLocationOption(
+        desiredAccuracy: CLLocationAccuracy.kCLLocationAccuracyHundredMeters));
+    var res = await AMapLocationClient.getLocation(true);
+    result = res.formattedAddress.toString();
+    AMapLocationClient.startLocation();
+    print(res.formattedAddress);
+    print(result);
   }
 
   void getCurrentUser() async {
@@ -39,6 +62,21 @@ class _AddScreenState extends State<AddScreen> {
     } catch (e) {
       print(e);
     }
+  }
+
+  DocumentSnapshot searchmyUser(String email) {
+    Firestore.instance
+        .collection('myuser')
+        .where("email", isEqualTo: email)
+        .snapshots()
+        .listen(
+          (data) => data.documents.forEach(
+            (doc) {
+              ds6 = doc;
+            },
+          ),
+        );
+    return ds6;
   }
 
   @override
@@ -123,7 +161,24 @@ class _AddScreenState extends State<AddScreen> {
                                 FlatButton(
                                   onPressed: () {},
                                   child: Text(
-                                    '金额: ¥0.00',
+                                    '金额¥0.00元',
+                                    style: TextStyle(
+                                        color: Colors.blue, fontSize: 10),
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(20),
+                                    ),
+                                  ),
+                                  color: Color(0xffF4F4F4),
+                                ),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                FlatButton(
+                                  onPressed: () {},
+                                  child: Text(
+                                    '地址：$result',
                                     style: TextStyle(
                                         color: Colors.blue, fontSize: 10),
                                   ),
@@ -144,17 +199,37 @@ class _AddScreenState extends State<AddScreen> {
                               child: FlatButton(
                                 color: Colors.blue,
                                 onPressed: () {
-                                  setState(() async {
+                                  setState(() {
+                                    DocumentSnapshot ds1 =
+                                        searchmyUser(loggedInUser.email);
+                                    print(ds1['name']);
+
                                     content = _contentController.text;
-                                    await demandProvider.addDocument(
+                                    demandProvider.addDocument(
                                       Demand(
-                                              name: userprovider.searchUser(
-                                                  loggedInUser.email)['name'],
-                                              content: content,
-                                              phone: userprovider.searchUser(
-                                                  loggedInUser.email)['phone'])
-                                          .toJson(),
+                                        name: userprovider.searchUser(
+                                            loggedInUser.email)['name'],
+                                        content: content,
+                                        phone: userprovider.searchUser(
+                                            loggedInUser.email)['phone'],
+                                        address: result,
+                                      ).toJson(),
                                     );
+                                    DocumentSnapshot ds2 =
+                                        searchmyUser(loggedInUser.email);
+                                    print(ds2.documentID);
+                                    print(ds2['name']);
+                                    ds2.reference.collection('posts').add(
+                                        Accept(
+                                                id: null,
+                                                sender: userprovider.searchUser(
+                                                    loggedInUser.email)['name'],
+                                                content: content,
+                                                senderphone: userprovider
+                                                    .searchUser(loggedInUser
+                                                        .email)['phone'])
+                                            .toJson());
+
                                     Navigator.pop(context);
                                   });
                                 },

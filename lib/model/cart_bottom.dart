@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:flutter_dingdong/model/cartprovider.dart';
 
 class CartBottom extends StatelessWidget {
   @override
@@ -8,22 +10,26 @@ class CartBottom extends StatelessWidget {
       color: Colors.white,
       child: Row(
         children: <Widget>[
-          selectAllBtn(),
-          allPriceArea(),
-          goButton(),
+          selectAllBtn(context),
+          allPriceArea(context),
+          goButton(context),
         ],
       ),
     );
   }
 
-  Widget selectAllBtn() {
+  Widget selectAllBtn(context) {
+    bool isAllCheck = Provider.of<CartProvider>(context).isAllCheck;
     return Container(
       child: Row(
         children: <Widget>[
           Checkbox(
-            value: true,
+            value: isAllCheck,
             activeColor: Colors.lightBlue,
-            onChanged: (bool value) {},
+            onChanged: (bool value) {
+              Provider.of<CartProvider>(context, listen: false)
+                  .changeAllCheckBtnState(value);
+            },
           ),
           Text('全选')
         ],
@@ -31,7 +37,8 @@ class CartBottom extends StatelessWidget {
     );
   }
 
-  Widget allPriceArea() {
+  Widget allPriceArea(context) {
+    int allPrice = Provider.of<CartProvider>(context).allPrice;
     return Container(
       width: 170,
       child: Column(
@@ -52,7 +59,7 @@ class CartBottom extends StatelessWidget {
               Container(
                 width: 40,
                 child: Text(
-                  '1992',
+                  '¥${allPrice}',
                   style: TextStyle(fontSize: 15, color: Colors.lightBlue),
                 ),
               ),
@@ -71,7 +78,8 @@ class CartBottom extends StatelessWidget {
     );
   }
 
-  Widget goButton() {
+  Widget goButton(context) {
+    int allCount = Provider.of<CartProvider>(context).allGoodsCount;
     return Container(
       width: 100,
       padding: EdgeInsets.only(left: 10),
@@ -85,7 +93,7 @@ class CartBottom extends StatelessWidget {
             borderRadius: BorderRadius.circular(3.0),
           ),
           child: Text(
-            '结算（6）',
+            '结算(${allCount})',
             style: TextStyle(color: Colors.white),
           ),
         ),
