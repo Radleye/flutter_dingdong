@@ -1,9 +1,9 @@
-# flutter_dingdong
-
-A new Flutter application.
-
-## Getting Started
-
->  软件效果截图
+### 自己当时学flutter动手做的一个项目
+##  系统运行的一些截图
 
 ![欢迎界面](https://github.com/xiaowo1996/flutter_dingdong/blob/master/lib/images/1.1.png)
+![欢迎界面](https://github.com/xiaowo1996/flutter_dingdong/blob/master/lib/images/2.png)
+![欢迎界面](https://github.com/xiaowo1996/flutter_dingdong/blob/master/lib/images/3.png)
+![欢迎界面](https://github.com/xiaowo1996/flutter_dingdong/blob/master/lib/images/4.png)
+![欢迎界面](https://github.com/xiaowo1996/flutter_dingdong/blob/master/lib/images/5.png)
+
